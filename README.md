@@ -1,6 +1,6 @@
-# GenZ Doctor 💊
+# GenZ Doctor 💊⛓️
 
-A modern health platform that combines AI analysis with medical expertise, designed with a clean, user-friendly interface for the next generation of healthcare users.
+A modern health platform that combines AI analysis with medical expertise, designed with a clean, user-friendly interface for the next generation of healthcare users. Alternatively login with socials and start a healthy-life onchain with our CivicWeb3 integrations, giving you your own wallet onchain💊⛓️
 
 ## Features
 

@@ -23,13 +23,13 @@ const HARDCODED_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 export const analyzeSymptoms = async (symptoms: string, age: string, gender: string): Promise<GeminiResponse> => {
   // Try to get the API key from localStorage first, fallback to the hardcoded key
-  const apiKey = localStorage.getItem("gemini_api_key") || HARDCODED_API_KEY;
+  // const apiKey = localStorage.getItem("gemini_api_key") || HARDCODED_API_KEY;
   
   /// TODO: Remove the hardcoded key in production
-  if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
-    toast.error("API key not configured correctly");
-    throw new Error("No valid API key available");
-  }
+  // if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
+  //   toast.error("API key not configured correctly");
+  //   throw new Error("No valid API key available");
+  // }
 
   try {
     // Updated to use the Gemini 2.5 Pro model
@@ -108,12 +108,6 @@ export const analyzeImage = async (
   bodyPart: string, 
   additionalInfo?: string
 ): Promise<ImageAnalysisResponse> => {
-  const apiKey = localStorage.getItem("gemini_api_key") || HARDCODED_API_KEY;
-  
-  if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
-    toast.error("API key not configured correctly");
-    throw new Error("No valid API key available");
-  }
 
   try {
     // Convert image to base64
@@ -126,45 +120,58 @@ export const analyzeImage = async (
       additionalInfoProvided: !!additionalInfo,
       imageSize: base64Image.length,
       fileType: imageFile.type,
-      apiKeyLength: apiKey.length
     });
     
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-vision:generateContent?key=${apiKey}`, {
+    // const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-vision:generateContent?key=${apiKey}`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     contents: [
+    //       {
+    //         parts: [
+    //           {
+    //             text: `As a medical expert, analyze this ${imageType} image of the ${bodyPart}. ${additionalInfo ? `Additional information: ${additionalInfo}` : ''} 
+    //             Provide a detailed medical analysis in a structured JSON format:
+    //             {
+    //               "findings": ["list 4-6 specific findings visible in the image"],
+    //               "interpretation": "provide a comprehensive interpretation of the image, connecting the findings to a possible diagnosis",
+    //               "confidence": a number between 60-95 representing your confidence level,
+    //               "recommendations": ["list 4-5 specific recommendations or next steps"],
+    //               "sources": [{"title": "Article title", "url": "URL to relevant medical literature"}]
+    //             }
+    //             Ensure the analysis is medically accurate, professional, and only contains information that can be supported by the image. Include relevant anatomical markers and be specific about what you can and cannot determine. Only return valid JSON.`
+    //           },
+    //           {
+    //             inline_data: {
+    //               mime_type: imageFile.type,
+    //               data: base64Image.split(',')[1] // Remove the data:image/jpeg;base64, prefix
+    //             }
+    //           }
+    //         ]
+    //       }
+    //     ],
+    //     generationConfig: {
+    //       temperature: 0.2,
+    //       topK: 32,
+    //       topP: 0.95,
+    //       maxOutputTokens: 1024,
+    //     }
+    //   }),
+    // });
+
+    const response = await fetch(`https://hack-server-71y3.onrender.com/api/analyze-image`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: `As a medical expert, analyze this ${imageType} image of the ${bodyPart}. ${additionalInfo ? `Additional information: ${additionalInfo}` : ''} 
-                Provide a detailed medical analysis in a structured JSON format:
-                {
-                  "findings": ["list 4-6 specific findings visible in the image"],
-                  "interpretation": "provide a comprehensive interpretation of the image, connecting the findings to a possible diagnosis",
-                  "confidence": a number between 60-95 representing your confidence level,
-                  "recommendations": ["list 4-5 specific recommendations or next steps"],
-                  "sources": [{"title": "Article title", "url": "URL to relevant medical literature"}]
-                }
-                Ensure the analysis is medically accurate, professional, and only contains information that can be supported by the image. Include relevant anatomical markers and be specific about what you can and cannot determine. Only return valid JSON.`
-              },
-              {
-                inline_data: {
-                  mime_type: imageFile.type,
-                  data: base64Image.split(',')[1] // Remove the data:image/jpeg;base64, prefix
-                }
-              }
-            ]
-          }
-        ],
-        generationConfig: {
-          temperature: 0.2,
-          topK: 32,
-          topP: 0.95,
-          maxOutputTokens: 1024,
-        }
+          "imageType": imageType,
+          "bodyPart": bodyPart,
+          "additionalInfo": additionalInfo,
+          "imageData": base64Image,
+          "mimeType": imageFile.type
       }),
     });
 

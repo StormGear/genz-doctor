@@ -34,14 +34,14 @@ const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onApiKeyChange }) => {
 
   return (
     <div className="relative">
-      <Button
+      {/* <Button
         size="sm"
         variant="outline"
         onClick={() => setIsVisible(!isVisible)}
         className="absolute right-4 top-4 z-10"
       >
         Custom API Key
-      </Button>
+      </Button> */}
       
       {isVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

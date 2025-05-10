@@ -9,7 +9,6 @@ import { analyzeSymptoms } from '@/services/geminiService';
 import { toast } from '@/components/ui/sonner';
 import ApiKeyInput from '@/components/ApiKeyInput';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Form,
@@ -58,18 +57,31 @@ const SymptomAnalyzer: React.FC = () => {
     },
   });
 
-  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!apiKey) {
-      toast.error("Please set your Gemini API key first");
-      return;
+  const saveAnalysis = () => {
+    if (result) {
+      localStorage.setItem("analysis_result", JSON.stringify(result));
+      toast.success("Analysis result saved successfully!");
+    } else {
+      toast.error("No analysis result to save.");
     }
+  };
+
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    // if (!apiKey) {
+    //   toast.error("Please set your Gemini API key first", {
+    //     position: "top-right",
+    //   });
+    //   return;
+    // }
     
     setIsAnalyzing(true);
     
     try {
       const analysisResult = await analyzeSymptoms(values.symptoms, values.age, values.gender);
       setResult(analysisResult);
-      toast.success("Analysis complete!");
+      toast.success("Analysis complete!", {
+        position: "top-right",
+      });
     } catch (error) {
       console.error("Error during analysis:", error);
       toast.error("Failed to analyze symptoms. Please try again.");
@@ -145,7 +157,7 @@ const SymptomAnalyzer: React.FC = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="male">Male</SelectItem>
+                            <SelectItem value="male" >Male</SelectItem>
                             <SelectItem value="female">Female</SelectItem>
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
@@ -185,7 +197,7 @@ const SymptomAnalyzer: React.FC = () => {
                   <Button 
                     type="submit" 
                     className="w-full" 
-                    disabled={isAnalyzing || !apiKey}
+                    disabled={isAnalyzing}
                   >
                     {isAnalyzing ? 'Analyzing...' : 'Analyze Symptoms'}
                   </Button>
@@ -341,7 +353,7 @@ const SymptomAnalyzer: React.FC = () => {
                     <Button className="flex-1 bg-genz-gradient">
                       Book Doctor Consultation
                     </Button>
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1" onClick={saveAnalysis}>
                       Save This Analysis
                     </Button>
                   </div>

@@ -71,6 +71,7 @@ src/
 MIT LICENSE
 
 ## Authors
-[StormGear](https://github.com/StormGear)
+[StormGear](https://github.com/StormGear), Software Developer
+[Qwekumingle](https://github.com/Qwekumingle), Medical Doctor
 
 

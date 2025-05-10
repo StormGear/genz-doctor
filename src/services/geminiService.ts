@@ -79,13 +79,16 @@ export const analyzeSymptoms = async (symptoms: string, age: string, gender: str
     });
        
     const data = await response.json();
-    console.log("Gemini API response:", data);
+    console.log("Gemini API response:", data.data);
     
     if (!response.ok) {
       throw new Error(data.error?.message || "Failed to analyze symptoms");
     }
     
-    const textContent = data.candidates[0].content.parts[0].text;
+    console.log("Received text content:", data.data.candidates[0]);
+    const textContent = data.data.candidates[0].content.parts[0].text;
+
+    
     
     // Extract the JSON part from the response
     const jsonMatch = textContent.match(/\{[\s\S]*\}/);
@@ -97,8 +100,7 @@ export const analyzeSymptoms = async (symptoms: string, age: string, gender: str
     return parsedResponse;
   } catch (error) {
     console.error("Error analyzing symptoms:", error);
-    toast.error("Failed to analyze symptoms. Please try again.");
-    throw error;
+    toast.error(`Failed to analyze symptoms. ${error.message}`);
   }
 };
 

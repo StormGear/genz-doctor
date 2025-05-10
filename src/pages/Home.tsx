@@ -174,7 +174,7 @@ const Home: React.FC = () => {
                 }
                  
                   <Link to="/pricing">
-                    <Button size="lg" variant="outline" className="w-full border-white text-white hover:bg-white/10 sm:w-auto">
+                    <Button size="lg" variant="outline" className="w-full text-primary hover:bg-gray-100 sm:w-auto">
                       View Pricing
                     </Button>
                   </Link>

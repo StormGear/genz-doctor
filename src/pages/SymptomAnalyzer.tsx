@@ -46,7 +46,7 @@ const formSchema = z.object({
 const SymptomAnalyzer: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem("gemini_api_key"));
+  // const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem("gemini_api_key"));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -90,9 +90,9 @@ const SymptomAnalyzer: React.FC = () => {
     }
   };
 
-  const handleApiKeyChange = (newApiKey: string) => {
-    setApiKey(newApiKey);
-  };
+  // const handleApiKeyChange = (newApiKey: string) => {
+  //   setApiKey(newApiKey);
+  // };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -116,7 +116,7 @@ const SymptomAnalyzer: React.FC = () => {
         </p>
       </div>
 
-      <ApiKeyInput onApiKeyChange={handleApiKeyChange} />
+      {/* <ApiKeyInput onApiKeyChange={handleApiKeyChange} /> */}
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         <div className="md:col-span-1">

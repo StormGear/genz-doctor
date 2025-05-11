@@ -62,7 +62,7 @@ const ImageAnalysis: React.FC = () => {
       );
       
       setResult(analysisResult);
-      toast.success("Image analysis complete");
+      toast.success("Image analysis complete!");
     } catch (error) {
       console.error("Error analyzing image:", error);
       toast.error("Failed to analyze image. Please try again.");

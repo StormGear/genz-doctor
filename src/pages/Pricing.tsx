@@ -1,57 +1,71 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Check } from 'lucide-react';
-import { useUser as useCivicWeb3User } from '@civic/auth-web3/react';
-import { useAutoConnect } from '@civic/auth-web3/wagmi';
-import { useAccount, useBalance, useConnect } from 'wagmi';
-import { userHasWallet } from "@civic/auth-web3";
-import { toast } from '@/components/ui/sonner';
+import { AlertCircle, Check, CheckCircle, Clock, X } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { FormEvent } from 'react';
+import { ByteArray, type Hex, parseEther } from 'viem';
+import { type BaseError, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi';
+import { toast } from 'sonner';
+import { Account } from '@/components/Account';
+import Connect from '@/components/Connect';
+import { useAccount } from 'wagmi';
+// import { useUser } from '@civic/auth-web3/react';
+// import { userHasWallet } from '@civic/auth-web3';
+
 
 const PricingTabs: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
-  const userContext =  useCivicWeb3User();
-  useAutoConnect();
+  // useAutoConnect();
+    const { data: hash, error, isPending, sendTransaction } = useSendTransaction()
+    const [address, setAddress] = useState('')
+    const [value, setValue] = useState('')
+    const { isLoading: isConfirming, isSuccess: isConfirmed } =
+      useWaitForTransactionReceipt({
+        hash,
+      })
+    const [notification, setNotification] = useState(false);
+      const { isConnected } = useAccount();
 
-  const afterLogin = async () => {
+  async function submit(e: FormEvent<HTMLFormElement>) {
     try {
-    // Check if the user has a wallet, and create one if not
-    if (userContext.user && !userHasWallet(userContext)) {
-      await userContext.createWallet();
+    e.preventDefault()
+    const to = address as Hex
+    const money = value as string
+    sendTransaction({ to, value: parseEther(money) });
+
+    } catch (e) {
+      console.error(e)
+      toast.error(`Transaction failed. ${(e as BaseError).shortMessage || (e as Error).message}`, {
+        position: 'top-right',
+        duration: 10000,
+      })
     }
-    if (userContext.user) {
-      toast.success('Wallet created successfully!');
-      console.log('Wallet created successfully:', userContext.user);
-    } else {
-      toast.error('Failed to create wallet');
-      console.log('Failed to create wallet');
-    }
-  } catch (error) {
-    console.log('Error in afterLogin:', error);
-    toast.error(`Error creating wallet, ${error}`);
   }
-  };
 
-   // Add the wagmi hooks
-   const { isConnected, address } = useAccount();
-   const balance = useBalance({ address });
+  useEffect(() => {
+    if (hash || isConfirming || isConfirmed || error) {
+      setNotification(true);
+      
+    }
+    
+  }, [hash, isConfirming, isConfirmed, error]);
 
-   const { connectors, connect } = useConnect();
 
-const connectWallet = () => connect({
-// connect to the "civic" connector
-  connector: connectors[0],
-});
 
-//    // A function that creates the wallet if the user doesn't have one already
-// const createWallet = () => {
-//   if (web3userContext.user && !userHasWallet(web3userContext)) {
-//     // Once the wallet is created, we can connect to it
-//     return web3userContext.createWallet().then(connectWallet)
-//   }
-// }
+
 
   const plans = [
     {
@@ -76,7 +90,7 @@ const connectWallet = () => connect({
     {
       name: 'Premium',
       description: 'Perfect for regular health monitoring.',
-      price: { monthly: 19.99, yearly: 199.99 },
+      price: { monthly: 0.2, yearly: 0.10 },
       features: [
         'Everything in Free plan',
         'Unlimited symptom analyses',
@@ -94,7 +108,7 @@ const connectWallet = () => connect({
     {
       name: 'Family',
       description: 'Health coverage for the whole family.',
-      price: { monthly: 39.99, yearly: 399.99 },
+      price: { monthly: 0.35, yearly: 399.99 },
       features: [
         'Everything in Premium plan',
         'Up to 5 family profiles',
@@ -120,7 +134,62 @@ const connectWallet = () => connect({
 
   return (
     <div className="genz-container py-12 relative">
+       {/* Transaction Notification Banner */}
+      {(hash || isConfirming || isConfirmed || error) && notification && (
+        <div className="mb-6 mx-auto max-w-4xl">
+          <div className={`px-4 py-3 rounded-lg shadow-sm flex items-center gap-3 transition-all ${
+            isConfirmed 
+              ? 'bg-green-50 border border-green-200' 
+              : error 
+              ? 'bg-red-50 border border-red-200' 
+              : 'bg-blue-50 border border-blue-200'
+          }`}>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-8 w-8 p-0 hover:bg-red-500 hover:text-white" 
+              onClick={() => {
+                // Here you could add some state to dismiss the notification
+                // This is just a placeholder for UX improvement
+                console.log("Notification dismissed");
+                setNotification(false);
+              }}
+            >
+              <span className="sr-only ">Dismiss</span>
+              <X className="h-4 w-4" />
+            </Button>
+            {isConfirmed && <CheckCircle className="h-5 w-5 text-green-600" />}
+            {error && <AlertCircle className="h-5 w-5 text-red-600" />}
+            {isConfirming && <Clock className="h-5 w-5 text-blue-600 animate-pulse" />}
+            {hash && !isConfirming && !isConfirmed && !error && <Clock className="h-5 w-5 text-blue-600" />}
+            
+            <div className="flex-1">
+              {hash && (
+                <p className="text-sm font-medium">
+                  Transaction Hash: <span className="font-mono text-xs break-all">{hash}</span>
+                </p>
+              )}
+              {isConfirming && (
+                <p className="text-sm font-medium text-blue-800">Waiting for confirmation...</p>
+              )}
+              {isConfirmed && (
+                <p className="text-sm font-medium text-green-800">Transaction confirmed successfully!</p>
+              )}
+              {error && (
+                <p className="text-sm font-medium text-red-800">
+                  Error: {(error as BaseError).shortMessage || error.message}
+                </p>
+              )}
+            </div>
+            
+      
+          </div>
+        </div>
+      )}
       <div className="mb-12 text-center">
+        
+    
+        
         <h1 className="mb-3 text-3xl font-bold md:text-4xl">Choose Your Plan</h1>
         <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
           Select the plan that best fits your health needs.
@@ -164,7 +233,7 @@ const connectWallet = () => connect({
                 </div>
               )}
               
-              <CardHeader className={`${plan.color} text-white`}>
+              <CardHeader className={`${plan.color} text-black/90`}>
                 <CardTitle>{plan.name}</CardTitle>
                 <CardDescription className={plan.popular ? 'text-white/90' : 'text-muted-foreground'}>
                   {plan.description}
@@ -174,7 +243,7 @@ const connectWallet = () => connect({
               <CardContent className="p-6">
                 <div className="mb-4">
                   <span className="text-3xl font-bold">
-                    {price === 0 ? 'Free' : `$${price.toFixed(2)}`}
+                    {price === 0 ? 'Free' : `Ξ${price.toFixed(2)} eth`}
                   </span>
                   <span className="text-muted-foreground">
                     {price !== 0 && `/${billingCycle === 'monthly' ? 'month' : 'year'}`}
@@ -214,12 +283,49 @@ const connectWallet = () => connect({
               </CardContent>
               
               <CardFooter className="pb-6">
+                 <Dialog>
+                <DialogTrigger asChild>
                 <Button 
-                  className={`w-full ${plan.popular ? 'bg-genz-gradient' : ''}`}
+                  className={`w-full ${plan.popular ? 'bg-genz-gradient' : ''} ${price === 0 ? 'cursor-not-allowed' : ''}`}
                   variant={plan.popular ? 'default' : 'outline'}
+                  disabled={price === 0}
                 >
                   {plan.ctaText}
                 </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Pay for Premium</DialogTitle>
+          <DialogDescription>
+            Make payment for the Premium plan. You will be charged Ξ{price.toFixed(2)} eth {billingCycle === 'monthly' ? 'monthly' : 'yearly'}.
+          </DialogDescription>
+             {isConnected ? <Account /> : <Connect />}
+        </DialogHeader>
+          <form className="set" onSubmit={submit}>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right" >
+              Address
+            </Label>
+            <Input id="name" placeholder='Enter receipient wallet address' className="col-span-3 mb-2"  required  onChange={(e) => setAddress(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right" >
+              Amount(ETH)
+            </Label>
+            <Input name="value" disabled value={price.toFixed(2)} placeholder='Enter amount in ETH' className="col-span-3" type="number" step="0.000000001" required onChange={(e) => setValue(e.target.value)} />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? 'Processing...' : 'Pay'}
+          </Button>
+        </DialogFooter>
+        </form>
+        
+        
+      </DialogContent>
+                </Dialog>
               </CardFooter>
             </Card>
           );

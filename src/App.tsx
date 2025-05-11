@@ -18,10 +18,11 @@ import Doctors from "./pages/Doctors";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { CivicAuthProvider } from "@civic/auth-web3/react";
 import { useUser } from "@civic/auth/react";
-import { WagmiProvider, createConfig, useAccount, useConnect, useBalance, http } from "wagmi";
+import { WagmiProvider, createConfig, http} from "wagmi";
 import { mainnet, sepolia } from "wagmi/chains";
 import { embeddedWallet } from "@civic/auth-web3/wagmi";
 import { toast } from "@/components/ui/sonner";
+import { injected, walletConnect } from 'wagmi/connectors';
 
 
 const wagmiConfig = createConfig({
@@ -32,6 +33,8 @@ const wagmiConfig = createConfig({
   },
   connectors: [
     embeddedWallet(),
+    injected(),
+    walletConnect({ projectId: import.meta.env.VITE_WAGMI_PROJECT_ID })
   ],
 });
 

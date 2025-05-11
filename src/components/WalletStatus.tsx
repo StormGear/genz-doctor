@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Check } from 'lucide-react';
+import { Check, Wallet } from 'lucide-react';
 import { useUser } from '@civic/auth-web3/react';
 import { useAccount, useBalance } from 'wagmi';
 import { userHasWallet } from "@civic/auth-web3";
@@ -63,9 +63,12 @@ const WalletStatus: React.FC = () => {
           <div className="p-4 rounded-lg border bg-card shadow-md">
             <div className="space-y-2">
               <div className="flex items-center">
+                <Wallet className="h-5 w-5 text-primary mr-2" />
                 <div className="h-6 w-6 rounded-full bg-green-500/20 flex items-center justify-center mr-2">
                   <Check className="h-3 w-3 text-green-500" />
+                  
                 </div>
+               
                 <span className="text-sm font-medium">Wallet Connected</span>
               </div>
               

@@ -46,7 +46,7 @@ src/
 ### Prerequisites
 
 - Node.js (v16 or higher)
-- npm or yarn
+- bun
 
 ### Installation
 
@@ -55,16 +55,13 @@ src/
    ```bash
    git clone https://github.com/yourusername/genz-health-ai-doc.git
    cd genz-health-ai-doc
-   npm install
-   # or
-   yarn install
+   bun install
+
    ```
 
 2. Start the development server
    ```bash
-   npm run dev
-   # or
-   yarn dev
+   bun run dev
    ```
 
 ## LICENSE

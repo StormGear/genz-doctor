@@ -112,11 +112,6 @@ const Home: React.FC = () => {
           </div>
 
           <div className="relative grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="hidden md:block">
-              <div className="absolute left-1/3 top-1/4 h-0.5 w-1/3 -translate-y-1/2 bg-primary"></div>
-              <div className="absolute left-2/3 top-1/4 h-0.5 w-1/3 -translate-y-1/2 bg-primary"></div>
-            </div>
-            
             <div className="rounded-xl bg-white p-6 shadow-md">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-xl font-bold text-white">
                 1
@@ -166,7 +161,7 @@ const Home: React.FC = () => {
                     <></>
                   ) : (
                     <Link to="/signup">
-                    <Button size="lg" className="w-full text-primary hover:bg-gray-100 sm:w-auto">
+                    <Button size="lg" className="w-full text-white hover:text-black sm:w-auto">
                       Sign Up Free
                     </Button>
                   </Link>

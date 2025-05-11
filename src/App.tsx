@@ -23,6 +23,8 @@ import { mainnet, sepolia } from "wagmi/chains";
 import { embeddedWallet } from "@civic/auth-web3/wagmi";
 import { toast } from "@/components/ui/sonner";
 import { injected, walletConnect } from 'wagmi/connectors';
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
 
 
 const wagmiConfig = createConfig({
@@ -79,6 +81,9 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />} />
       <Route path="/about" element={<AboutUs />} />
       <Route path="/doctors" element={<Doctors />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/contact" element={<Contact />} />
+
       
       {/* Protected routes */}
       <Route path="/symptom-analyzer" element={

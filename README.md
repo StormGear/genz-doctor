@@ -3,7 +3,9 @@
 A modern health platform that combines AI analysis with medical expertise, designed with a clean, user-friendly interface for the next generation of healthcare users. Alternatively login with socials and start a healthy-life onchain with our CivicWeb3 integrations, giving you your own wallet onchain💊⛓️
 
 ## Live Demo
-Google Drive for live demo: (Video Demo)[https://www.loom.com/share/eb79abe48165434a87bf9b6f2d463f73?sid=b59836db-293f-43d2-ad51-c82215adb41c]
+Google Drive for live demo: [Video Demo](https://www.loom.com/share/eb79abe48165434a87bf9b6f2d463f73?sid=b59836db-293f-43d2-ad51-c82215adb41c)
+
+(Demo)[https://www.loom.com/share/eb79abe48165434a87bf9b6f2d463f73?sid=b59836db-293f-43d2-ad51-c82215adb41c]
 
 ## Features
 

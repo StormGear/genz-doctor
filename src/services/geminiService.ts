@@ -31,7 +31,7 @@ export const analyzeSymptomsUsingGemini = async (symptoms: string, age: string, 
   // }
 
   try {
-    const response = await fetch(`https://hack-server-71y3.onrender.com/api/another-gemini`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/another-gemini`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export const analyzeImage = async (
     //   }),
     // });
 
-    const response = await fetch(`https://hack-server-71y3.onrender.com/api/analyze-image`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/analyze-image`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

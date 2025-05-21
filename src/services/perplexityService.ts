@@ -24,7 +24,7 @@ export const analyzeSymptomsUsingPerplexity = async (symptoms: string, age: stri
 
   try {
     // Get data from api
-    const response = await fetch(`https://hack-server-71y3.onrender.com/api/perplexity/query-perplexity`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/perplexity/query-perplexity`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

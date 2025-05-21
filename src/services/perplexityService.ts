@@ -1,7 +1,7 @@
 
 import { toast } from "@/components/ui/sonner";
 
-interface GeminiResponse {
+interface PerplexityResponse {
   possibleConditions: string[];
   differentialDiagnosis: string[];
   recommendations: string[];
@@ -20,18 +20,11 @@ interface ImageAnalysisResponse {
 
 
 
-export const analyzeSymptomsUsingGemini = async (symptoms: string, age: string, gender: string): Promise<GeminiResponse> => {
-  // Try to get the API key from localStorage first, fallback to the hardcoded key
-  // const apiKey = localStorage.getItem("gemini_api_key") || HARDCODED_API_KEY;
-  
-  /// TODO: Remove the hardcoded key in production
-  // if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
-  //   toast.error("API key not configured correctly");
-  //   throw new Error("No valid API key available");
-  // }
+export const analyzeSymptomsUsingPerplexity = async (symptoms: string, age: string, gender: string): Promise<PerplexityResponse> => {
 
   try {
-    const response = await fetch(`https://hack-server-71y3.onrender.com/api/another-gemini`, {
+    // Get data from api
+    const response = await fetch(`https://hack-server-71y3.onrender.com/api/perplexity/query-perplexity`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -44,24 +37,35 @@ export const analyzeSymptomsUsingGemini = async (symptoms: string, age: string, 
     });
        
     const data = await response.json();
-    console.log("Gemini API response:", data.data);
-    
+    console.log("Perplexity API response status:", response.status);
+    console.log("Data from api:", data);
+    console.log("Perplexity API response:", data.data);
+   
+
     if (!response.ok) {
       throw new Error(data.error?.message || "Failed to analyze symptoms");
     }
     
-    console.log("Received text content:", data.data.candidates[0]);
-    const textContent = data.data.candidates[0].content.parts[0].text;
+    console.log("Received text content:", data.data.choices[0].message.content);
+    const textContent = data.data.choices[0].message.content;
+
+      // Get data from a json file within the project
+    // const pexData = await import('./pex.json');
+    // console.log("PEX data:", pexData);
+
+      
+    // console.log("Received text content:", pexData.data.choices[0].message.content);
+    // const textContent = pexData.data.choices[0].message.content;
 
     
     
     // Extract the JSON part from the response
     const jsonMatch = textContent.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error("Could not parse JSON response from Gemini API");
+      throw new Error("Could not parse JSON response from Perplexity API");
     }
     
-    const parsedResponse: GeminiResponse = JSON.parse(jsonMatch[0]);
+    const parsedResponse: PerplexityResponse = JSON.parse(jsonMatch[0]);
     return parsedResponse;
   } catch (error) {
     console.error("Error analyzing symptoms:", error);

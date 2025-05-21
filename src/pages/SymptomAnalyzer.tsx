@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { analyzeSymptoms } from '@/services/geminiService';
+import { analyzeSymptomsUsingGemini } from '@/services/geminiService';
 import { toast } from '@/components/ui/sonner';
 import ApiKeyInput from '@/components/ApiKeyInput';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,9 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { analyzeSymptomsUsingPerplexity } from '@/services/perplexityService';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface AnalysisResult {
   possibleConditions: string[];
@@ -46,7 +49,7 @@ const formSchema = z.object({
 const SymptomAnalyzer: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  // const [apiKey, setApiKey] = useState<string | null>(localStorage.getItem("gemini_api_key"));
+   const [selectedModel, setSelectedModel] = useState<'gemini' | 'perplexity'>('perplexity');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -67,18 +70,18 @@ const SymptomAnalyzer: React.FC = () => {
   };
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    // if (!apiKey) {
-    //   toast.error("Please set your Gemini API key first", {
-    //     position: "top-right",
-    //   });
-    //   return;
-    // }
     
     setIsAnalyzing(true);
     
     try {
-      const analysisResult = await analyzeSymptoms(values.symptoms, values.age, values.gender);
-      setResult(analysisResult);
+      // const analysisResult = await analyzeSymptomsUsingGemini(values.symptoms, values.age, values.gender);
+      if (selectedModel === 'gemini') {
+        const analysisResult = await analyzeSymptomsUsingGemini(values.symptoms, values.age, values.gender);
+        setResult(analysisResult);
+      } else {
+        const analysisResult = await analyzeSymptomsUsingPerplexity(values.symptoms, values.age, values.gender);
+        setResult(analysisResult);
+      }
       toast.success("Analysis complete!", {
         position: "top-right",
       });
@@ -90,9 +93,6 @@ const SymptomAnalyzer: React.FC = () => {
     }
   };
 
-  // const handleApiKeyChange = (newApiKey: string) => {
-  //   setApiKey(newApiKey);
-  // };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -122,7 +122,69 @@ const SymptomAnalyzer: React.FC = () => {
         <div className="md:col-span-1">
           <Card className="sticky top-24">
             <CardHeader>
-              <CardTitle>Enter Your Symptoms</CardTitle>
+              <CardTitle className="flex justify-between items-center">
+                <span>Enter Your Symptoms</span>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <div className="flex items-center gap-2">
+                        {selectedModel === 'gemini' ? (
+                          <>
+                            <img 
+                              src="/gemini-color.svg" 
+                              alt="Gemini Logo" 
+                              className="h-4 w-4" 
+                            />
+                            <span>Gemini</span>
+                          </>
+                        ) : (
+                          <>
+                            <img 
+                              src="/perplexity-color.svg" 
+                              alt="Perplexity Logo" 
+                              className="h-4 w-4" 
+                            />
+                            <span>Perplexity</span>
+                          </>
+                        )}
+                      </div>
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[200px]">
+                    <DropdownMenuLabel>Select AI Model</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={() => setSelectedModel('gemini')}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <img 
+                        src="/gemini-color.svg" 
+                        alt="Gemini Logo" 
+                        className="h-4 w-4" 
+                      />
+                      <span>Google Gemini</span>
+                      {selectedModel === 'gemini' && (
+                        <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setSelectedModel('perplexity')}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <img 
+                        src="/perplexity-color.svg" 
+                        alt="Perplexity Logo" 
+                        className="h-4 w-4" 
+                      />
+                      <span>Perplexity AI</span>
+                      {selectedModel === 'perplexity' && (
+                        <span className="ml-auto h-2 w-2 rounded-full bg-primary" />
+                      )}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardTitle>
               <CardDescription>
                 Be as detailed as possible about what you're experiencing.
               </CardDescription>

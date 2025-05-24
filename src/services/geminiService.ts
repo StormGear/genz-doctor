@@ -21,14 +21,6 @@ interface ImageAnalysisResponse {
 
 
 export const analyzeSymptomsUsingGemini = async (symptoms: string, age: string, gender: string): Promise<GeminiResponse> => {
-  // Try to get the API key from localStorage first, fallback to the hardcoded key
-  // const apiKey = localStorage.getItem("gemini_api_key") || HARDCODED_API_KEY;
-  
-  /// TODO: Remove the hardcoded key in production
-  // if (!apiKey || apiKey === "YOUR_GEMINI_API_KEY_HERE") {
-  //   toast.error("API key not configured correctly");
-  //   throw new Error("No valid API key available");
-  // }
 
   try {
     const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/another-gemini`, {

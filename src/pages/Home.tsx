@@ -68,35 +68,41 @@ const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <Card>
-              <CardContent className="flex flex-col items-center p-6 text-center">
-                <div className="mb-4 rounded-full bg-primary/10 p-3 text-4xl text-primary">🔍</div>
-                <h3 className="mb-2 text-xl font-semibold">Symptom Analysis</h3>
-                <p className="text-muted-foreground">
-                  Describe your symptoms in your own words and get AI-powered insights instantly.
-                </p>
-              </CardContent>
-            </Card>
+            <Link to={user || civicUser ? "/symptom-analyzer" : "/signup"}>
+              <Card>
+                <CardContent className="flex flex-col items-center p-6 text-center">
+                  <div className="mb-4 rounded-full bg-primary/10 p-3 text-4xl text-primary">🔍</div>
+                  <h3 className="mb-2 text-xl font-semibold">Symptom Analysis</h3>
+                  <p className="text-muted-foreground">
+                    Describe your symptoms in your own words and get AI-powered insights instantly.
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card>
-              <CardContent className="flex flex-col items-center p-6 text-center">
-                <div className="mb-4 rounded-full bg-secondary/10 p-3 text-4xl text-secondary">🩻</div>
-                <h3 className="mb-2 text-xl font-semibold">Image Analysis</h3>
-                <p className="text-muted-foreground">
-                  Upload medical images for AI interpretation with references to medical literature.
-                </p>
-              </CardContent>
-            </Card>
+            <Link to={user || civicUser ? "/image-analysis" : "/signup"}>
+              <Card>
+                <CardContent className="flex flex-col items-center p-6 text-center">
+                  <div className="mb-4 rounded-full bg-secondary/10 p-3 text-4xl text-secondary">🩻</div>
+                  <h3 className="mb-2 text-xl font-semibold">Image Analysis</h3>
+                  <p className="text-muted-foreground">
+                    Upload medical images for AI interpretation with references to medical literature.
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card>
-              <CardContent className="flex flex-col items-center p-6 text-center">
-                <div className="mb-4 rounded-full bg-accent/10 p-3 text-4xl text-accent">👩‍⚕️</div>
-                <h3 className="mb-2 text-xl font-semibold">Doctor Consultations</h3>
-                <p className="text-muted-foreground">
-                  Premium users can schedule live virtual consultations with licensed doctors.
-                </p>
-              </CardContent>
-            </Card>
+            <Link to={user || civicUser ? "/consultations" : "/signup"}>
+              <Card>
+                <CardContent className="flex flex-col items-center p-6 text-center">
+                  <div className="mb-4 rounded-full bg-accent/10 p-3 text-4xl text-accent">👩‍⚕️</div>
+                  <h3 className="mb-2 text-xl font-semibold">Doctor Consultations</h3>
+                  <p className="text-muted-foreground">
+                    Premium users can schedule live virtual consultations with licensed doctors.
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>

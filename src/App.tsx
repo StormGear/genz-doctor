@@ -25,6 +25,7 @@ import { toast } from "@/components/ui/sonner";
 import { injected, walletConnect } from 'wagmi/connectors';
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
+import ScrollToTop from "./components/ScrollToTop";
 
 
 const wagmiConfig = createConfig({
@@ -127,6 +128,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+      <ScrollToTop />
         <AuthProvider>
           <Layout>
             <AppRoutes />
